@@ -24,7 +24,7 @@ torch.__version__
 try:
     # Execute curl command to download the dataset
     subprocess.run(
-        ["curl", "-L", "-o", "workspace/melanoma-cancer-dataset.zip", 
+        ["curl", "-L", "-o", "melanoma-cancer-dataset.zip", 
          "https://www.kaggle.com/api/v1/datasets/download/bhaveshmittal/melanoma-cancer-dataset"],
         check=True
     )
@@ -35,8 +35,8 @@ except Exception as e:
 
 # Unzip the dataset
 # Path to the zip file
-zip_file_path = "workspace/melanoma-cancer-dataset.zip"
-extract_to_path = "workspace/melanoma-cancer-dataset"
+zip_file_path = "melanoma-cancer-dataset.zip"
+extract_to_path = "melanoma-cancer-dataset"
 
 # Extract the zip file
 with zipfile.ZipFile(zip_file_path, 'r') as zip_ref:
@@ -51,7 +51,7 @@ nvidia_smi = subprocess.run(["nvidia-smi"], capture_output=True, text=True)
 print(nvidia_smi.stdout)
 
 #Walk through the dataset
-IMAGE_PATH = "workspace/melanoma-cancer-dataset"
+IMAGE_PATH = "melanoma-cancer-dataset"
 def walk_through_dir(dir_path):
     for dirpath, dirnames, filesnames in os.walk(dir_path):
         print(f"There are {len(dirnames)} directories and {len(filesnames)} images in '{dirpath}'")
@@ -85,6 +85,17 @@ classes
 class_dict = train_data.class_to_idx
 class_dict
 
+
+def find_classes(directory: str) -> Tuple[List[str], Dict[str, int]]:
+    classes = sorted(entry.name for entry in os.scandir(target_directory) if entry.is_dir())
+
+    if not classes:
+        raise FileNotFoundError(f"Counld not find the classes. Check the directory: {directory}")
+    
+    class_to_idx = {class_name: i for i, class_name in enumerate(classes)}
+    return classes, class_to_idx
+
+print(find_classes(train_dir))
 
 class ImageFolderCustom(Dataset):
     def __init__(self, targ_dir: str, transform=None):
