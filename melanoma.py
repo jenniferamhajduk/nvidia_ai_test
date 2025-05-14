@@ -20,24 +20,33 @@ import os
 import subprocess
 torch.__version__
 
-#Download the dataset
-try:
-    # Execute curl command to download the dataset
-    subprocess.run(
-        ["curl", "-L", "-o", "melanoma-cancer-dataset.zip", 
-         "https://www.kaggle.com/api/v1/datasets/download/bhaveshmittal/melanoma-cancer-dataset"],
-        check=True
-    )
-    print("Dataset downloaded successfully.")
-except Exception as e:
-    print(f"Error downloading dataset: {e}")
-
-
-# Unzip the dataset
-# Path to the zip file
 zip_file_path = "melanoma-cancer-dataset.zip"
 extract_to_path = "melanoma-cancer-dataset"
 
+try:
+    print("Downloading dataset...")
+    url = "https://www.kaggle.com/api/v1/datasets/download/bhaveshmittal/melanoma-cancer-dataset"
+    
+    # Using urllib instead of curl
+    urllib.request.urlretrieve(url, zip_file_path)
+    print("Dataset downloaded successfully.")
+    
+    # Unzip only if download was successful
+    if os.path.exists(zip_file_path):
+        # Extract the zip file
+        with zipfile.ZipFile(zip_file_path, 'r') as zip_ref:
+            zip_ref.extractall(extract_to_path)
+        print(f"Extracted to {extract_to_path}")
+    else:
+        print(f"Error: {zip_file_path} not found after download.")
+        
+except Exception as e:
+    print(f"Error downloading or extracting dataset: {e}")
+    # Create directory structure if download fails, to allow script to continue
+    os.makedirs(extract_to_path, exist_ok=True)
+    os.makedirs(os.path.join(extract_to_path, "train"), exist_ok=True)
+    os.makedirs(os.path.join(extract_to_path, "test"), exist_ok=True)
+    
 # Extract the zip file
 with zipfile.ZipFile(zip_file_path, 'r') as zip_ref:
     zip_ref.extractall(extract_to_path)
