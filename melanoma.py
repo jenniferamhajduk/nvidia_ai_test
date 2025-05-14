@@ -95,6 +95,11 @@ classes
 class_dict = train_data.class_to_idx
 class_dict
 
+target_directory = train_dir
+print(f"Target dir: {target_directory}")
+
+class_names_found = sorted(entry.name for entry in list(os.scandir(target_directory)))
+class_names_found
 
 def find_classes(directory: str) -> Tuple[List[str], Dict[str, int]]:
     classes = sorted(entry.name for entry in os.scandir(target_directory) if entry.is_dir())
