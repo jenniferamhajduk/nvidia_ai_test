@@ -18,6 +18,7 @@ from typing import Tuple, Dict, List
 import random
 import os
 import subprocess
+import urllib.request
 torch.__version__
 
 zip_file_path = "melanoma-cancer-dataset.zip"
@@ -46,7 +47,7 @@ except Exception as e:
     os.makedirs(extract_to_path, exist_ok=True)
     os.makedirs(os.path.join(extract_to_path, "train"), exist_ok=True)
     os.makedirs(os.path.join(extract_to_path, "test"), exist_ok=True)
-    
+
 # Extract the zip file
 with zipfile.ZipFile(zip_file_path, 'r') as zip_ref:
     zip_ref.extractall(extract_to_path)
